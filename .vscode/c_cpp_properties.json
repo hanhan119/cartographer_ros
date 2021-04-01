@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/wyh/2d_slam/cartographer_ws/devel/include/**",
+                "/opt/ros/melodic/include/**",
+                "/home/wyh/2d_slam/cartographer_ws/src/pointcloud_to_laserscan/include/**",
+                "/usr/include/**",
+                "${workspaceFolder}/cartographer_ros"
+            ],
+            "name": "ROS"
+        }
+    ],
+    "version": 4
+}

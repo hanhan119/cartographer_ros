@@ -50,6 +50,8 @@
 #include "sensor_msgs/NavSatFix.h"
 #include "sensor_msgs/PointCloud2.h"
 #include "tf2_ros/transform_broadcaster.h"
+#include <tf2/utils.h>
+#include "geometry_msgs/PoseWithCovarianceStamped.h"
 
 namespace cartographer_ros {
 
@@ -189,6 +191,7 @@ class Node {
   ::ros::Publisher landmark_poses_list_publisher_;
   ::ros::Publisher constraint_list_publisher_;
   ::ros::Publisher tracked_pose_publisher_;
+  ::ros::Publisher _pose_pub;
   // These ros::ServiceServers need to live for the lifetime of the node.
   std::vector<::ros::ServiceServer> service_servers_;
   ::ros::Publisher scan_matched_point_cloud_publisher_;

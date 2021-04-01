@@ -36,6 +36,17 @@ install(TARGETS cartographer_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+google_binary(cartographer_set_initpose
+  SRCS
+    set_initpose_main.cc
+)
+
+install(TARGETS cartographer_set_initpose
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 google_binary(cartographer_offline_node
   SRCS
     offline_node_main.cc

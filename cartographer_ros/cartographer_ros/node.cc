@@ -221,6 +221,7 @@ void Node::AddSensorSamplers(const int trajectory_id,
 
 void Node::PublishLocalTrajectoryData(const ::ros::TimerEvent& timer_event) {
   absl::MutexLock lock(&mutex_);
+  _pose_pub = node_handle_.advertise<nav_msgs::Odometry>("pose_nav", 100);
   for (const auto& entry : map_builder_bridge_.GetLocalTrajectoryData()) {
     const auto& trajectory_data = entry.second;
 
@@ -313,6 +314,28 @@ void Node::PublishLocalTrajectoryData(const ::ros::TimerEvent& timer_event) {
           stamped_transform.transform = ToGeometryMsgTransform(
               tracking_to_map * (*trajectory_data.published_to_tracking));
           tf_broadcaster_.sendTransform(stamped_transform);
+
+          nav_msgs::Odometry axisodom;
+          axisodom.pose.covariance[0]   = 0.01; 
+          axisodom.pose.covariance[7]   = 0.01; 
+          axisodom.pose.covariance[35]  = 0.01; 
+          axisodom.pose.covariance[14]  = 1e-10; 
+          axisodom.pose.covariance[21]  = 1e-10; 
+          axisodom.pose.covariance[28]  = 1e-10; 
+
+          //axisodom.twist.covariance = ODOM_TWIST_COVARIANCE;
+          axisodom.twist.covariance[0]  = 0.01; 
+          axisodom.twist.covariance[7]  = 0.01; 
+          axisodom.twist.covariance[35] = 0.01; 
+
+          axisodom.header.stamp = stamped_transform.header.stamp;
+          axisodom.header.frame_id = node_options_.map_frame;
+          axisodom.pose.pose.position.x  = stamped_transform.transform.translation.x;
+          axisodom.pose.pose.position.y  = stamped_transform.transform.translation.y;
+          axisodom.pose.pose.position.z  = stamped_transform.transform.translation.z;
+          axisodom.pose.pose.orientation = stamped_transform.transform.rotation;
+          _pose_pub.publish(axisodom);
+
         }
       }
       if (node_options_.publish_tracked_pose) {
@@ -615,6 +638,7 @@ bool Node::HandleStartTrajectory(
 }
 
 void Node::StartTrajectoryWithDefaultTopics(const TrajectoryOptions& options) {
+  std::cout<<"\e[3;33;42m      StartTrajectoryWithDefaultTopics      \e[0m"<<std::endl;
   absl::MutexLock lock(&mutex_);
   CHECK(ValidateTrajectoryOptions(options));
   AddTrajectory(options);
@@ -726,6 +750,7 @@ bool Node::HandleReadMetrics(
 }
 
 void Node::FinishAllTrajectories() {
+  std::cout<<"\e[1;31;43m      finishalltrajectories       \e[0m"<<std::endl;
   absl::MutexLock lock(&mutex_);
   for (const auto& entry : map_builder_bridge_.GetTrajectoryStates()) {
     if (entry.second == TrajectoryState::ACTIVE) {
